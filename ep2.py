@@ -46,3 +46,12 @@ def haversine(raio, latitude_A, longitude_A, latitude_B, longitude_B):
 
 
 
+# Está na Lista?
+def esta_na_lista(pais, lista_paises):
+  for X in lista_paises:
+    if X[0]==pais:
+      return True 
+  return False
+
+
+
