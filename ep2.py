@@ -1,10 +1,10 @@
 #EP2 por André Levorin e Luigi Zema
 
+
+
 #imports
 import random
 import math
-
-
 
 
 
@@ -43,6 +43,18 @@ def haversine(raio, latitude_A, longitude_A, latitude_B, longitude_B):
     angulo = math.sqrt(a + c * b)
     haversine_formula = 2 * raio * math.asin(angulo)
     return haversine_formula    
+
+
+
+# Adicionando em uma Lista Ordenada
+def adiciona_em_ordem(nome_pais, distancia, lista_pais_distancia):
+    lista_nova_pais_distancia = []
+    lista_nova_pais_distancia.append(nome_pais)
+    lista_nova_pais_distancia.append(distancia)
+    lista_pais_distancia.append(lista_nova_pais_distancia)
+    segundo_elemento = lista_nova_pais_distancia[1]
+    lista_pais_distancia.sort(key= lambda x : x[1])
+    return (lista_pais_distancia)
 
 
 
