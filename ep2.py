@@ -66,4 +66,23 @@ def esta_na_lista(pais, lista_paises):
   return False
 
 
+# Sorteia Letra com Restricoes
+def sorteia_letra(palavra,lista_restrita):
+    pontos=['.',',','-',';',' ']
+    palavra=palavra.lower()
+    check_for=False
+    lista=[]
+    saida=''
+
+    for letra in palavra:
+        if letra not in lista_restrita and letra not in pontos and letra not in lista:
+            lista.append(letra)
+            check_for=True
+
+    while check_for:
+        saida = random.choice(lista)
+        check_for=False
+    return saida
+
+
 
