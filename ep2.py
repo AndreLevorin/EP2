@@ -79,7 +79,7 @@ def sorteia_letra(palavra,lista_restrita):
             lista.append(letra)
             check_for=True
     while check_for:
-        saida = random.choice(lista)
+        saida=random.choice(lista)
         check_for=False
     return saida
 
