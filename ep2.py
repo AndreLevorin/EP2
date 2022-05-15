@@ -3825,26 +3825,6 @@ DADOS = {
 #imports
 import random
 import math
-from this import d
-
-
-# Variaveis Importantes
-tentativas = 0
-
-# Bem Vindo
-print(' ============================ ')
-print('|                            |')
-print('| Bem-vindo ao Insper Países |')
-print('|                            |')
-print(' ==== Design de Software ==== ')
-print('')
-print('Comandos:')
-print('')
-print('    dica       - entra no mercado de dicas')
-print('    desisto    - desiste da rodada')
-print('    inventario - exibe sua posição')
-print('')
-print('Um país foi escolhido, tente adivinhar!')
 
 
 
@@ -3866,7 +3846,6 @@ paises = normaliza(DADOS)
 def sorteia_pais(dicionario_paises):
     lista_chaves_paises = list(dicionario_paises.keys())
     random_chave_paises = random.choice(lista_chaves_paises)
-    print(random_chave_paises)
     return (random_chave_paises)    
 pais_sorteado = sorteia_pais(paises)
 
@@ -3928,89 +3907,169 @@ def sorteia_letra(palavra,lista_restrita):
     return saida
 
 
+# Variaveis Importantes
+tentativas = 0
+jogo = True
 
-# dificuldade
-dificuldade = input('Selecione a dificuldade: [f|m|d] ') # Seleciona a dificuldade do jogo
-if dificuldade == 'f':
-  tentativas += 20
-elif dificuldade == 'm':
-  tentativas += 10
-elif dificuldade == 'd':
-  tentativas += 5
+# Dados Importantes
+area = (paises[pais_sorteado])['area']
+populacao = (paises[pais_sorteado])['populacao']
+capital = (paises[pais_sorteado])['capital']
+bandeira = (paises[pais_sorteado])['bandeira']
+continente = paises[pais_sorteado]['Continente']
+latitude = ((paises[pais_sorteado])['geo'])['latitude']
+longitude = ((paises[pais_sorteado])['geo'])['longitude']
 
-while tentativas != 20 and tentativas != 10 and tentativas != 5: # Caso o jogador digite errado ou nao entenda as instrucoes
-  dificuldade = input('Escolha uma das tres dificuldades: [f|m|d] ')
+# Listas Importantes
+lista_tentativas = []
+dic_distancia = {}
+
+# variaveis importantes (2)
+tentativas_reversas = 1 #tentativas para o acerto
+d = 0 # Variavel importante para as distancias
+
+
+# Bem Vindo
+print(' ============================ ')
+print('|                            |')
+print('| Bem-vindo ao Insper Países |')
+print('|                            |')
+print(' ==== Design de Software ==== ')
+print('')
+print('Comandos:')
+print('')
+print('    dica       - entra no mercado de dicas')
+print('    desisto    - desiste da rodada')
+print('    inventario - exibe sua posição')
+print('')
+print('Um país foi escolhido, tente adivinhar!')
+
+
+
+while jogo:
+  # dificuldade
+  dificuldade = input('Selecione a dificuldade: [f|m|d] ') # Seleciona a dificuldade do jogo
   if dificuldade == 'f':
-      tentativas += 20
+    tentativas += 20
   elif dificuldade == 'm':
     tentativas += 10
   elif dificuldade == 'd':
     tentativas += 5
 
-
-
-# Listas Importantes
-lista_tentativas = []
-
-
-
-
-
-# variaveis importantes (2)
-tentativas_reversas = 1 #tentativas para o acerto
-
-while tentativas > 0:
-  pergunta = input('Qual seu palpite? ')
-  
-
-  if pergunta != pais_sorteado and pergunta != 'dica' and pergunta != 'inventario' and pergunta != 'desisto' and pergunta not in lista_tentativas and pergunta in paises: # Errou a pergunta, perdeu uma tentativa
-    print('Incorreto!')
-    tentativas -= 1
-
-  if pergunta in lista_tentativas and pergunta in paises: # Repetiu o pais, entao nao subtrai ponto, mas avisa o jogador
-    print('Voce ja chutou {}, tente novamente com outro pais.'.format(pergunta))
-  
-
-  lista_tentativas.append(pergunta) # Lista com todos os chutes
+  while tentativas != 20 and tentativas != 10 and tentativas != 5: # Caso o jogador digite errado ou nao entenda as instrucoes
+    dificuldade = input('Escolha uma das tres dificuldades: [f|m|d] ')
+    if dificuldade == 'f':
+        tentativas += 20
+    elif dificuldade == 'm':
+      tentativas += 10
+    elif dificuldade == 'd':
+      tentativas += 5
 
 
 
 
 
-
-  if pergunta not in paises and pergunta != 'desisto': # Pais deconhecido nao conta como uma tentativa
-    print('Pais desconhecido')
-
-
-
-  if pergunta == pais_sorteado: # Acertou o pais e ganhou o jogo 
-    print('Parabens voce acertou em {} tentativa(s)!!'.format(tentativas_reversas))
-    jogar_novamente = input('Jogar novamente? [s|n] ')
-    if jogar_novamente == 's':
-          
-    tentativas == 0
+  custo_dicas = {
+        1: 4,
+        2: 3,
+        3: 6,
+        4: 5,
+        5: 7,
+        0: 0
+  }
 
 
 
-  if pais_sorteado != pergunta and pergunta in paises: # Numero de jogadas em que o jogador completa o jogo (tentativas_reversas)
-    tentativas_reversas += 1
-  
-
-
-  if tentativas > 0: # Numero de tentativas restantes
-      print(f'Voce tem {tentativas} tentativa(s)')
-  if tentativas == 0: # Jogador perde o jogo
-      print(f'>>>Infelizmente voce perdeu, o pais era: {pais_sorteado}')
-      print('GAME OVER')
+  while tentativas > 0:
+    pergunta = input('Qual seu palpite? ') # Pergunta principal e objetivo do jogo
+    
 
 
 
-  if pergunta == 'desisto': #desistir do jogo
-    confirma_desisto = input('Tem certeza que deseja desistir da rodada? [s|n] ')
-    if confirma_desisto == 's':
-      print('>>> Que deselegante desistir, o país era: {}'.format(pais_sorteado))
-      print('')
-      print('')
-      print('>>> Volte sempre!')
+    if pergunta != pais_sorteado and pergunta != 'dica' and pergunta != 'inventario' and pergunta != 'desisto' and pergunta not in lista_tentativas and pergunta in paises: # Errou a pergunta, perdeu uma tentativa
+      print('Incorreto!')
+      tentativas -= 1
+
+    if pergunta in lista_tentativas and pergunta in paises: # Repetiu o pais, entao nao subtrai ponto, mas avisa o jogador
+      print('Voce ja chutou {}, tente novamente com outro pais.'.format(pergunta))
+
+
+    if pergunta == '/resposta': # Easter Eggs no jogo
+      print(pais_sorteado)
+    
+
+    lista_tentativas.append(pergunta) # Lista com todos os chutes
+
+
+    if pergunta not in paises and pergunta != 'desisto' and pergunta != '/resposta': # Pais deconhecido nao conta como uma tentativa
+      print('Pais desconhecido')
+
+
+
+
+
+
+
+
+
+
+
+
+    if pergunta == pais_sorteado: # Acertou o pais e ganhou o jogo 
+      print('Parabens voce acertou em {} tentativa(s)!!'.format(tentativas_reversas))
       break
 
+
+
+    if pais_sorteado != pergunta and pergunta in paises: # Numero de jogadas em que o jogador completa o jogo (tentativas_reversas)
+      tentativas_reversas += 1
+    
+
+
+    if tentativas > 0: # Numero de tentativas restantes
+        print(f'Voce tem {tentativas} tentativa(s)')
+    if tentativas == 0: # Jogador perde o jogo
+        print(f'>>>Infelizmente voce perdeu, o pais era: {pais_sorteado}')
+        print('GAME OVER')
+
+
+
+    if pergunta == 'desisto': #desistir do jogo
+      confirma_desisto = input('Tem certeza que deseja desistir da rodada? [s|n] ')
+      if confirma_desisto == 's':
+        print('==================================================')
+        print(f'\n>>> Que deselegante desistir, o país era: {pais_sorteado}\n')
+        print('==================================================')
+        break
+  
+
+
+
+
+
+
+  # Jogar Novamente
+  jogar_dnv = input('Deseja jogar novamente? [s|n] ')
+  if jogar_dnv == 'n':
+    jogo = False
+    print('Ok! Até próxima!')
+  else:
+    pais_sorteado = sorteia_pais(paises)
+    # Dados Importantes
+    area = (paises[pais_sorteado])['area']
+    populacao = (paises[pais_sorteado])['populacao']
+    capital = (paises[pais_sorteado])['capital']
+    bandeira = (paises[pais_sorteado])['bandeira']
+    continente = paises[pais_sorteado]['Continente']
+    latitude = ((paises[pais_sorteado])['geo'])['latitude']
+    longitude = ((paises[pais_sorteado])['geo'])['longitude']
+
+    # Listas Importantes
+    lista_tentativas = []
+    dic_distancia = {}
+
+    # variaveis importantes (2)
+    tentativas_reversas = 1 #tentativas para o acerto
+    d = 0 # Variavel importante para as distancias
+
+    tentativas = 0
