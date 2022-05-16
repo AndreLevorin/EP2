@@ -1,4 +1,5 @@
 #EP2 por André Levorin e Luigi Zema
+#VERSAO FINAL
 
 
 # Base de Paises
@@ -3825,6 +3826,7 @@ DADOS = {
 #imports
 import random
 import math
+from re import L
 
 
 
@@ -3914,7 +3916,6 @@ tentativas_reversas = 1 #tentativas para o acerto
 d = 0 # Variavel importante para as distancias
 letras_capitais = 0
 capital_str = ""
-contador_cores = 0
 i = 0
 
 # Dados Importantes
@@ -4017,6 +4018,7 @@ while jogo:
               
             
     if pergunta == 'dica':
+      print(linhas)
       print('Mercado de Dicas')
       print('----------------------------------------')
           
@@ -4032,66 +4034,78 @@ while jogo:
       if tentativas > 7:
         print('5. Continente       - custa 7 tentativas')
       print('0. Sair do Mercado de Dicas')
-      print('----------------------------------------')          
+      print('----------------------------------------')   
+      print(linhas)       
 
 
 
-      dica = (input('Escolha sua opção: '))
+      dica = int(input('Escolha sua opção: '))
 
-      if dica >= '7' or dica not in lista_dicas: # Caso o jogador nao selecione uma das opcoes orientadas.
+      if dica >= 7 or dica not in lista_dicas: # Caso o jogador nao selecione uma das opcoes orientadas.
         print('Por favor, selecione uma das opcoes disponiveis no mercado: ') # Orienta o jogador ao caminho certo
+        print(linhas)
 
-
-      elif dica == '1' and dica in lista_dicas:
-        for cores
+      # DICA BANDEIRA
+      elif dica == 1 and dica in lista_dicas:
+        for x in bandeira:
+          if bandeira[x] > 0:
+            lista_band.append(x)
+        for y in range(len(lista_band)):
+          if lista_band[y] == 'outras':
+            del lista_band[y]
+        for z in lista_band:
+          lista_cor += f'{z};'
+        print('As cores das bandeiras sao: {}'.format(lista_cor))
+        print(linhas)
         tentativas -= 4
-        contador_cores += 1
+        inventario['Cores das bandeiras: '] = bandeira
+        del lista_dicas[0]
 
 
-
-      elif dica == '2' and dica in lista_dicas and tentativas >= 3:
-        if dica == 2:
-          print('A proxima letra da capital: {}'.format(capital[i]))
+      # DICA CAPITAL
+      elif dica == 2 and dica in lista_dicas and tentativas >= 3:
+          print('A  do pais: {}'.format(capital[i]))
+          print(linhas)
           i += 1
-          lista_capital.append(capital[i])
-          print(lista_capital)
-  
+          inventario['Capital do pais: '] = capital[i]
+          tentativas -= 3
 
   
-
       # DICA AREA
-      elif dica == '3' and dica in lista_dicas and tentativas >= 6:
+      elif dica == 3 and dica in lista_dicas and tentativas >= 6:
         print('A area do pais: {}'.format(area))
+        print(linhas)
         del lista_dicas[2] # Deleta dica da lista e proibi jogador de repetir a dica
         inventario['Area do pais: '] = area
         tentativas -= 6
 
+
       # DICA POPULACAO
-      elif dica == '4' and dica in lista_dicas and tentativas >= 5:
+      elif dica == 4 and dica in lista_dicas and tentativas >= 5:
         print('A populacao do pais: {}'.format(populacao))
+        print(linhas)
         del lista_dicas[3]
         inventario['Populacao do pais: '] = populacao
         tentativas -= 5
 
+
       # DICA CONTINENTE
-      elif dica == '5' and dica in lista_dicas and tentativas >= 7:
+      elif dica == 5 and dica in lista_dicas and tentativas >= 7:
         print('Esta no continente: {}'.format(continente))
+        print(linhas)
         del lista_dicas[4]
         inventario['continente'] = continente
         tentativas -= 7
 
       # SAIR DO MERCADO
-      elif dica == '0':
+      elif dica == 0:
         print(linhas)
         print('Saindo do mercado de dicas...')
         print('Voltando ao jogo: ')
         print(linhas)
 
 
-          
-            
-
-
+    # abre o inventario
     if pergunta == 'inventario':
       if inventario == {}:
         print(linhas)
@@ -4176,6 +4190,15 @@ while jogo:
 
   else:
     pais_sorteado = sorteia_pais(paises)
+    # Variaveis Importantes
+    tentativas = 0
+    jogo = True
+    tentativas_reversas = 1 #tentativas para o acerto
+    d = 0 # Variavel importante para as distancias
+    letras_capitais = 0
+    capital_str = ""
+    i = 0
+
     # Dados Importantes
     area = (paises[pais_sorteado])['area']
     populacao = (paises[pais_sorteado])['populacao']
@@ -4190,8 +4213,31 @@ while jogo:
     dic_distancia = {}
     lista_chutes_distancias = []
     lista_distancia = []
+    inventario = {}
+    lista_capital = []
+    lista_band = []
+    lista_cor = ''
 
-    # variaveis importantes novamente
-    tentativas_reversas = 1 #tentativas para o acerto
-    d = 0 
-    tentativas = 0
+    # DICAS
+    lista_dicas = [1,2,3,4,5,0]
+    dic_dicas = {
+        1: 'Cor da Bandeira - custa 4 tentativas',
+        2: 'Letra da capital - custa 3 tentativas',
+        3: 'Area - custa 6 tentativas',
+        4: 'Populacao - custa 5 tentativas',
+        5: 'Continente - custa 7 tentativas',
+        6: 'Sair do mercado - '
+    }
+
+    custo_dicas = {
+            1: 4,
+            2: 3,
+            3: 6,
+            4: 5,
+            5: 7,
+            0: 0
+      }
+
+
+    # Aparencia do jogo
+    linhas = ('==================================================')
