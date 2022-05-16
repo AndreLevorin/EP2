@@ -3910,6 +3910,10 @@ def sorteia_letra(palavra,lista_restrita):
 # Variaveis Importantes
 tentativas = 0
 jogo = True
+tentativas_reversas = 1 #tentativas para o acerto
+d = 0 # Variavel importante para as distancias
+letras_capitais = 0
+capital_str = ""
 
 # Dados Importantes
 area = (paises[pais_sorteado])['area']
@@ -3923,10 +3927,34 @@ longitude = ((paises[pais_sorteado])['geo'])['longitude']
 # Listas Importantes
 lista_tentativas = []
 dic_distancia = {}
+lista_chutes_distancias = []
+lista_distancia = []
+inventario = {}
+lista_capital = []
 
-# variaveis importantes (2)
-tentativas_reversas = 1 #tentativas para o acerto
-d = 0 # Variavel importante para as distancias
+# DICAS
+lista_dicas = [1,2,3,4,5,0]
+dic_dicas = {
+    1: 'Cor da Bandeira - custa 4 tentativas',
+    2: 'Letra da capital - custa 3 tentativas',
+    3: 'Area - custa 6 tentativas',
+    4: 'Populacao - custa 5 tentativas',
+    5: 'Continente - custa 7 tentativas',
+    6: 'Sair do mercado - '
+}
+
+custo_dicas = {
+        1: 4,
+        2: 3,
+        3: 6,
+        4: 5,
+        5: 7,
+        0: 0
+  }
+
+
+# Aparencia do jogo
+linhas = '========================================'
 
 
 # Bem Vindo
@@ -3965,24 +3993,104 @@ while jogo:
     elif dificuldade == 'd':
       tentativas += 5
 
-
-
-
-
-  custo_dicas = {
-        1: 4,
-        2: 3,
-        3: 6,
-        4: 5,
-        5: 7,
-        0: 0
-  }
-
-
-
   while tentativas > 0:
     pergunta = input('Qual seu palpite? ') # Pergunta principal e objetivo do jogo
     
+
+    if pergunta in paises:
+      distancia = haversine(EARTH_RADIUS, ((paises[pergunta])['geo'])['latitude'],((paises[pergunta])['geo'])['longitude'], latitude, longitude) # Calculando a distancia
+      if pergunta not in lista_chutes_distancias:
+        lista_chutes_distancias.append(pergunta) # Adicionar o chute a uma lista
+      dic_distancia[distancia] = pergunta
+      for x in dic_distancia.keys():
+        if x not in lista_distancia:
+          lista_distancia.append(x)
+      lista_distancia.sort()
+      print('Distancias: ')
+      for y in lista_distancia:
+        print(f'{y:.2f} KM --> {dic_distancia[y]}')
+              
+            
+    if pergunta == 'dica':
+      print('Mercado de Dicas')
+      print('----------------------------------------')
+          
+
+      if tentativas > 4:
+        print('1. Cor da bandeira  - custa 4 tentativas')
+      if tentativas > 3:
+        print('2. Letra da capital - custa 3 tentativas')
+      if tentativas > 6:
+        print('3. Área             - custa 6 tentativas')
+      if tentativas > 5:
+        print('4. População        - custa 5 tentativas')
+      if tentativas > 7:
+        print('5. Continente       - custa 7 tentativas')
+      print('0. Sair do Mercado de Dicas')
+      print('----------------------------------------')          
+
+
+
+      dica = int(input('Escolha sua opção: '))
+
+      if dica >= 7 or dica not in lista_dicas: # Caso o jogador nao selecione uma das opcoes orientadas.
+        print('Por favor, selecione uma das opcoes disponiveis no mercado: ') # Orienta o jogador ao caminho certo
+
+      elif dica == 1 and dica not in lista_dicas: # Dica 1
+        cor_bandeira =  0
+
+
+      elif dica == 2 and dica in lista_dicas:
+        if tentativas < 3:
+          print('Voce nao pode comprar essa dica.')
+        else:
+          print('Proxima letra da capital: {}'.format(capital[letras_capitais]))
+          capital_str += capital[letras_capitais]
+          print('Letras obtidas ate agora: '.format(capital_str))
+          tentativas -= 3
+          letras_capitais += 1
+          inventario['Letras Capital: '] = capital_str
+          if len(capital)-1 == letras_capitais:
+            del dic_dicas[2]
+            del lista_dicas[1]
+
+
+
+      # DICA AREA
+      elif dica == 3 and dica in lista_dicas:
+        print('A area do pais: {}'.format(area))
+        del lista_dicas[2] # Deleta dica da lista e proibi jogador de repetir a dica
+        inventario['Area do pais: '] = area
+        tentativas -= 6
+
+      # DICA POPULACAO
+      elif dica == 4 and dica in lista_dicas:
+        print('A populacao do pais: {}'.format(populacao))
+        del lista_dicas[3]
+        inventario['Populacao do pais: '] = populacao
+        tentativas -= 5
+
+      # DICA CONTINENTE
+      elif dica == 5 and dica in lista_dicas:
+        print('Esta no continente: {}'.format(continente))
+        del lista_dicas[4]
+        inventario['continente'] = continente
+        tentativas -= 7
+
+      # SAIR DO MERCADO
+      elif dica == 0:
+        print(linhas)
+        print('Saindo do mercado de dicas...')
+        print('Voltando ao jogo: ')
+        print(linhas)
+
+
+          
+            
+
+
+
+
 
 
 
@@ -3994,14 +4102,20 @@ while jogo:
       print('Voce ja chutou {}, tente novamente com outro pais.'.format(pergunta))
 
 
-    if pergunta == '/resposta': # Easter Eggs no jogo
+
+    # Easter Eggs no jogo
+    if pergunta == '/resposta': # Comando secreto da a resposta para o jogador
       print(pais_sorteado)
+    if pergunta == '/fim': # Comando secreto ajuda a sair do jogo mais rapidamente
+      break
+    if pergunta == '/hack':
+      tentativas = 100
     
 
     lista_tentativas.append(pergunta) # Lista com todos os chutes
 
 
-    if pergunta not in paises and pergunta != 'desisto' and pergunta != '/resposta': # Pais deconhecido nao conta como uma tentativa
+    if pergunta not in paises and pergunta != 'desisto' and pergunta != '/resposta' and pergunta != 'dica' and pergunta != '/hack': # Pais deconhecido nao conta como uma tentativa
       print('Pais desconhecido')
 
 
@@ -4016,7 +4130,9 @@ while jogo:
 
 
     if pergunta == pais_sorteado: # Acertou o pais e ganhou o jogo 
+      print('=============================================')
       print('Parabens voce acertou em {} tentativa(s)!!'.format(tentativas_reversas))
+      print('=============================================')
       break
 
 
@@ -4029,8 +4145,10 @@ while jogo:
     if tentativas > 0: # Numero de tentativas restantes
         print(f'Voce tem {tentativas} tentativa(s)')
     if tentativas == 0: # Jogador perde o jogo
+        print('=============================================')
         print(f'>>>Infelizmente voce perdeu, o pais era: {pais_sorteado}')
         print('GAME OVER')
+        print('=============================================')
 
 
 
@@ -4052,7 +4170,9 @@ while jogo:
   jogar_dnv = input('Deseja jogar novamente? [s|n] ')
   if jogar_dnv == 'n':
     jogo = False
+    print('=================')
     print('Ok! Até próxima!')
+    print('=================')
   else:
     pais_sorteado = sorteia_pais(paises)
     # Dados Importantes
@@ -4067,9 +4187,10 @@ while jogo:
     # Listas Importantes
     lista_tentativas = []
     dic_distancia = {}
+    lista_chutes_distancias = []
+    lista_distancia = []
 
-    # variaveis importantes (2)
+    # variaveis importantes novamente
     tentativas_reversas = 1 #tentativas para o acerto
-    d = 0 # Variavel importante para as distancias
-
+    d = 0 
     tentativas = 0
